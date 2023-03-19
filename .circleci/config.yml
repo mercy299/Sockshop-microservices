@@ -1,100 +1,100 @@
 version: 2.1
-# orbs:
-#   slack: circleci/slack@4.10.1
-#   aws-cli: circleci/aws-cli@3.1.4
+orbs:
+  slack: circleci/slack@4.10.1
+  aws-cli: circleci/aws-cli@3.1.4
 
-# commands:
-#   install_awscli:
-#     description: Install AWS CLI v2
-#     steps:
-#       - run:
-#           name: Install AWS CLI v2
-#           command: |
-#             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-#             unzip awscliv2.zip
-#             sudo ./aws/install
+commands:
+  install_awscli:
+    description: Install AWS CLI v2
+    steps:
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
 
-# jobs:
+jobs:
 
-# ## DEPLOY INFRASTRUCTURE
-#   terraform-init:
-#     working_directory: /tmp/project
-#     docker:
-#       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-#     steps:
-#       - checkout
-#       - run:
-#           name: Terraform init
-#           command: |
-#             cd terraform
-#             terraform init -input=false
-#       - persist_to_workspace:
-#           root: .
-#           paths:
-#             - .
+## DEPLOY INFRASTRUCTURE
+  terraform-init:
+    working_directory: /tmp/project
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: Terraform init
+          command: |
+            cd terraform
+            terraform init -input=false
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
-#   terraform-plan:
-#     docker:
-#       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-#     steps:
-#       - attach_workspace:
-#           at: .
-#       - run:
-#           name: Terraform plan
-#           command: |
-#             cd terraform
-#             terraform plan -out tfapply 
-#       - persist_to_workspace:
-#           root: .
-#           paths:
-#             - .
+  terraform-plan:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform plan
+          command: |
+            cd terraform
+            terraform plan -out tfapply 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
-#   terraform-apply:
-#     docker:
-#       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-#     steps:
-#       - attach_workspace:
-#           at: .
-#       - run:
-#           name: Terraform apply
-#           command: |
-#             cd terraform
-#             terraform apply -auto-approve tfapply
-#       - persist_to_workspace:
-#           root: .
-#           paths:
-#             - .
+  terraform-apply:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Terraform apply
+          command: |
+            cd terraform
+            terraform apply -auto-approve tfapply
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
       
-#   terraform-plan-destroy:
-#     docker:
-#       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-#     steps:
-#       - attach_workspace:
-#           at: .
-#       - run:
-#           name: terraform create destroy plan
-#           command: |
-#             cd terraform
-#             terraform plan -destroy -out tfdestroy
-#           when: on_fail
-#       - persist_to_workspace:
-#           root: .
-#           paths:
-#             - .
+  terraform-plan-destroy:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: terraform create destroy plan
+          command: |
+            cd terraform
+            terraform plan -destroy -out tfdestroy
+          when: on_fail
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
    
 
-#   terraform-destroy:
-#     docker:
-#       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-#     steps:
-#       - attach_workspace:
-#           at: .
-#       - run:
-#           name: terraform destroy
-#           command: |
-#             cd terraform
-#             # terraform apply -auto-approve tfdestroy
-#             terraform plan -destroy -out tfdestroy
+  terraform-destroy:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: terraform destroy
+          command: |
+            cd terraform
+            # terraform apply -auto-approve tfdestroy
+            terraform plan -destroy -out tfdestroy
 
 
 
